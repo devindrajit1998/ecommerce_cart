@@ -28,7 +28,7 @@ export default function ProductCard(props) {
     };
 
     useEffect(() => {
-        const currentProduct = cartData.find((item) => item.id === data?.id);
+        const currentProduct = cartData?.find((item) => item.id === data?.id);
         setCartItem(currentProduct || null);
     }, [cartData, data?.id]);
 

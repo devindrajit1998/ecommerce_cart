@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit"
 
 
 const initialState = {
-    cartItems: [],
-}
+    cartItems: JSON.parse(localStorage.getItem("cart")) || [],
+};
+
 
 export const cartSlice = createSlice({
     name: "cart",
@@ -11,6 +12,10 @@ export const cartSlice = createSlice({
     reducers: {
         addToCart: (state, action) => {
             const currentProduct = action.payload;
+
+            if (!state.cartItems) {
+                state.cartItems = [];
+            }
             const itemExists = state.cartItems?.find(item => item.id === currentProduct.id);
             if (itemExists) {
                 state.cartItems = state.cartItems?.map((item) => item.id === currentProduct.id ? { ...item, quantity: item.quantity + 1 } : item);
@@ -22,7 +27,7 @@ export const cartSlice = createSlice({
         },
         increment: (state, action) => {
             const currentId = action.payload;
-            const existingProduct = state.cartItems.find(item => item.id === currentId);
+            const existingProduct = state.cartItems?.find(item => item.id === currentId);
             if (existingProduct) {
                 existingProduct.quantity += 1;
                 localStorage.setItem('cart', JSON.stringify(state.cartItems));
@@ -30,7 +35,7 @@ export const cartSlice = createSlice({
         },
         decrement: (state, action) => {
             const currentId = action.payload;
-            const existingProduct = state.cartItems.find(item => item.id === currentId);
+            const existingProduct = state.cartItems?.find(item => item.id === currentId);
             if (existingProduct) {
                 existingProduct.quantity -= 1;
                 localStorage.setItem('cart', JSON.stringify(state.cartItems));
@@ -38,10 +43,10 @@ export const cartSlice = createSlice({
         },
         removeSingle: (state, action) => {
             const currentId = action.payload;
-            state.cartItems = state.cartItems.filter(item => item.id !== currentId);
+            state.cartItems = state.cartItems?.filter(item => item.id !== currentId);
             localStorage.setItem('cart', JSON.stringify(state.cartItems));
         },
-        updateCart:(state, action) => {
+        updateCart: (state, action) => {
             state.cartItems = action.payload;
             // localStorage.setItem('cart', JSON.stringify(state.cartItems));
         }
